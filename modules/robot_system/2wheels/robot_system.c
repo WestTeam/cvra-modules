@@ -135,6 +135,7 @@ void rs_set_right_ext_encoder(struct robot_system * rs, int32_t (*right_ext_enco
 
 void rs_set_angle(void * data, int32_t angle)
 {
+/*
     struct rs_polar p;
     struct rs_wheels w;
     struct robot_system * rs = data;
@@ -146,10 +147,12 @@ void rs_set_angle(void * data, int32_t angle)
 
     safe_setpwm(rs->left_pwm, rs->left_pwm_param, w.left);
     safe_setpwm(rs->right_pwm, rs->right_pwm_param, w.right);
+*/
 }
 
 void rs_set_distance(void * data, int32_t distance)
 {
+/*
     struct robot_system * rs = data;
     struct rs_polar p;
     struct rs_wheels w;
@@ -162,6 +165,7 @@ void rs_set_distance(void * data, int32_t distance)
 
     safe_setpwm(rs->left_pwm, rs->left_pwm_param, w.left);
     safe_setpwm(rs->right_pwm, rs->right_pwm_param, w.right);
+*/
 }
 
 int32_t rs_get_angle(void * data)
@@ -244,7 +248,7 @@ void rs_update(void * data)
     struct rs_polar pmot;
 #endif
     int32_t delta_angle, delta_distance;
-
+#if 0
     /* read encoders */
     wext.left = safe_getencoder(rs->left_ext_encoder, rs->left_ext_encoder_param);
     wext.right = safe_getencoder(rs->right_ext_encoder, rs->right_ext_encoder_param);
@@ -307,4 +311,5 @@ void rs_update(void * data)
     rs->pmot_prev = pmot;
     rs->wmot_prev = wmot;
 #endif
+    #endif
 }

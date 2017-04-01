@@ -1,8 +1,10 @@
 #include "vect2.h"
 
 #include <stdlib.h>
-#include <math.h>
-#include "../fast_math/fast_math.h"
+
+#include <tools.h>
+//#include <math.h>
+//#include "../fast_math/fast_math.h"
 
 /* Convert a polar vector to a cartesian one */
 void vect2_pol2cart(vect2_pol* vp, vect2_cart* vc)
@@ -10,8 +12,8 @@ void vect2_pol2cart(vect2_pol* vp, vect2_cart* vc)
    if(vp == NULL) return;
    if(vc == NULL) return;
    
-   vc->x = (Real)( (vp->r)*cos(vp->theta) );
-   vc->y = (Real)( (vp->r)*sin(vp->theta) );
+   vc->x = (float)( (vp->r)*__cosf(vp->theta) );
+   vc->y = (float)( (vp->r)*__sinf(vp->theta) );
    
    return;
 }
@@ -22,8 +24,8 @@ void vect2_cart2pol(vect2_cart* vc, vect2_pol* vp)
    if(vc == NULL) return;
    if(vp == NULL) return;
    
-   vp->r = (Real)( sqrt((vc->x)*(vc->x)+(vc->y)*(vc->y)) );
-   vp->theta = (Real)atan2(vc->y,vc->x);
+   vp->r = (float)( __ieee754_sqrtf((vc->x)*(vc->x)+(vc->y)*(vc->y)) );
+   vp->theta = (float)__ieee754_atan2f(vc->y,vc->x);
    
    return;
 }
@@ -105,7 +107,7 @@ void vect2_scale_pol(vect2_pol* vp1, Real alpha, vect2_pol* vresult)
 /* Norm of a cartesian vector. */
 float vect2_norm_cart(vect2_cart *vc)
 {
-	return (fast_sqrtf((vc->x * vc->x) + (vc->y * vc->y)));
+	return (__ieee754_sqrtf((vc->x * vc->x) + (vc->y * vc->y)));
 }
 
 /* Distance between two cartesian vectors. */
@@ -124,16 +126,16 @@ float vect2_dot_product_cart(vect2_cart *vc1, vect2_cart *vc2)
 }
 
 /* Angle between two cartesian vectors in radian. */
-float vect2_angle_2vec_rad_cart(vect2_cart *vc1, vect2_cart *vc2)
+/*float vect2_angle_2vec_rad_cart(vect2_cart *vc1, vect2_cart *vc2)
 {
 	float nvc1 = vect2_norm_cart(vc1);
 	float nvc2 = vect2_norm_cart(vc2);
 
 	return (fast_acosf(vect2_dot_product_cart(vc1, vc2) / (nvc1 * nvc2)));
-}
+}*/
 
 /* Angle between vector and x-axis. */
-float vect2_angle_vec_x_rad_cart(vect2_cart *vc)
+/*float vect2_angle_vec_x_rad_cart(vect2_cart *vc)
 {
 	return (fast_atan2f(vc->y,vc->x));
-}
+}*/

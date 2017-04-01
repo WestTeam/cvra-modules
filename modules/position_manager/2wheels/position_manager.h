@@ -23,7 +23,8 @@
 #ifndef _ROBOT_POSITION_MANAGER_H_
 #define _ROBOT_POSITION_MANAGER_H_
 
-#include <platform.h>
+#include <stdint.h>
+//#include <platform.h>
 #include <math.h>
 #include <2wheels/robot_system.h>
 #include <vect2.h>
@@ -143,7 +144,7 @@ struct robot_position
 #ifdef CONFIG_MODULE_COMPENSATE_CENTRIFUGAL_FORCE
     double centrifugal_coef;            /**< Coefficient for the centrifugal computation */
 #endif
-    semaphore_t lock;                   /**< Lock to prevent concurrent access. */
+    //semaphore_t lock;                   /**< Lock to prevent concurrent access. */
 };
 
 

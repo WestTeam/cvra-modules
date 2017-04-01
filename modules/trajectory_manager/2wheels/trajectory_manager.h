@@ -33,7 +33,8 @@
 #ifndef TRAJECTORY_MANAGER
 #define TRAJECTORY_MANAGER
 
-#include <platform.h>
+#include <stdint.h>
+//#include <platform.h>
 #include <vect2.h>
 #include <2wheels/robot_system.h>
 #include <vect_base.h>
@@ -125,8 +126,8 @@ struct trajectory {
 
     double cs_hz;   /**< The frequency of the control system associated with this manager. */
 
-    INT8U scheduler_task;    /**<< id of the task. */
-    OS_STK task_stk[2048];
+    //INT8U scheduler_task;    /**<< id of the task. */
+    //OS_STK task_stk[2048];
 };
 
 /** @brief Structure initialization.

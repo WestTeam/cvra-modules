@@ -25,9 +25,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-
-#include <platform.h>
-#include <aversive/error.h>
+#include <stdint.h>
+#include <tools.h>
+//#include <platform.h>
+//#include <aversive/error.h>
 #include <vect2.h>
 
 #include <2wheels/position_manager.h>
@@ -82,14 +83,14 @@ void delete_event(struct trajectory *traj)
 
     set_quadramp_speed(traj, traj->d_speed, traj->a_speed);
     set_quadramp_acc(traj, traj->d_acc, traj->a_acc);
-    OSTaskDel(TRAJ_EVT_PRIO);
+    //OSTaskDel(TRAJ_EVT_PRIO);
 }
 
 /** schedule the trajectory event */
 void schedule_event(struct trajectory *traj)
 {
 
-    traj->scheduler_task = TRAJ_EVT_PRIO;
+    /*traj->scheduler_task = TRAJ_EVT_PRIO;
     OSTaskCreateExt(trajectory_manager_event,
                     (void*)traj,
                     &traj->task_stk[2047],
@@ -97,7 +98,7 @@ void schedule_event(struct trajectory *traj)
                     TRAJ_EVT_PRIO,
                     &traj->task_stk[0],
                     2048,
-                    NULL, NULL);
+                    NULL, NULL);*/
 }
 
 /** do a modulo 2.pi -> [-Pi,+Pi], knowing that 'a' is in [-3Pi,+3Pi] */
@@ -135,7 +136,7 @@ uint8_t is_robot_in_xy_window(struct trajectory *traj, double d_win)
     double y1 = traj->target.cart.y;
     double x2 = position_get_x_double(traj->position);
     double y2 = position_get_y_double(traj->position);
-    return ( sqrt ((x2-x1) * (x2-x1) + (y2-y1) * (y2-y1)) < d_win );
+    return ( __ieee754_sqrtf ((x2-x1) * (x2-x1) + (y2-y1) * (y2-y1)) < d_win );
 }
 
 /** near the angle target in radian ? Only valid if
@@ -157,7 +158,7 @@ enum trajectory_state trajectory_get_state(struct trajectory *traj)
 {
     return traj->state;
 }
-
+/*
 int trajectory_moving_backward(struct trajectory *traj) {
     return cs_get_consign(traj->csm_distance) < cs_get_filtered_consign(traj->csm_distance);
 }
@@ -171,7 +172,7 @@ int trajectory_turning(struct trajectory *traj) {
     if(trajectory_moving_backward(traj)) return 0;
     return cs_get_consign(traj->csm_angle) != cs_get_filtered_consign(traj->csm_angle);
 }
-
+*/
 
 
 /* distance unit conversions */

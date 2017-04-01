@@ -7,7 +7,8 @@
 #ifndef _CONTROL_SYSTEM_MANAGER_
 #define _CONTROL_SYSTEM_MANAGER_
 
-#include <platform.h>
+//#include <platform.h>
+ #include <stdint.h>
 
 /** \addtogroup Regulation
  * Ce module s'occupe de fournir un wrapper aux filtres (PID et trapeze).

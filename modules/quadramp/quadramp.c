@@ -21,9 +21,11 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
+//#include <math.h>
 
-#include <aversive.h>
+#include <tools.h>
+
+//#include <aversive.h>
 #include <quadramp.h>
 
 void quadramp_init(struct quadramp_filter *q)
@@ -85,7 +87,7 @@ int32_t quadramp_do_filter(void * data, int32_t in)
 	d_float = (double)in - previous_out ;
 
 	/* d is very small, we can jump to dest */
-	if (fabs(d_float) < 2.) {
+	if (__fabsf(d_float) < 2.) {
 		q->previous_var = 0;
 		q->previous_out = in;
 		q->previous_in = in;
@@ -98,7 +100,7 @@ int32_t quadramp_do_filter(void * data, int32_t in)
 	if (d > 0 && var_2nd_ord_neg) {
 		double ramp_pos;
 		/* var_2nd_ord_neg < 0 */
-		ramp_pos = sqrt((var_2nd_ord_neg*var_2nd_ord_neg)/4 -
+		ramp_pos = __ieee754_sqrtf((var_2nd_ord_neg*var_2nd_ord_neg)/4 -
 				2*d_float*var_2nd_ord_neg) +
 			var_2nd_ord_neg/2;
 
@@ -110,7 +112,7 @@ int32_t quadramp_do_filter(void * data, int32_t in)
 		double ramp_neg;
 
 		/* var_2nd_ord_pos > 0 */
-		ramp_neg = -sqrt( (var_2nd_ord_pos*var_2nd_ord_pos)/4 -
+		ramp_neg = -__ieee754_sqrtf( (var_2nd_ord_pos*var_2nd_ord_pos)/4 -
 				  2*d_float*var_2nd_ord_pos ) -
 			var_2nd_ord_pos/2;
 

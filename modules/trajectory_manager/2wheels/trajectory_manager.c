@@ -25,11 +25,11 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <platform.h>
-#include <aversive/error.h>
+//#include <platform.h>
+//#include <aversive/error.h>
 #include <vect2.h>
 
-#include <2wheels/position_manager.h>
+//#include <2wheels/position_manager.h>
 #include <2wheels/robot_system.h>
 #include <control_system_manager.h>
 #include <quadramp.h>

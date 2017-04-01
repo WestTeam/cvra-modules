@@ -73,7 +73,7 @@
  * coding wheels as the robot will be 6cm off after a single table crossing !
  */
 
-#include <platform.h>
+//#include <platform.h>
 #include "2wheels/angle_distance.h"
 
 #ifndef _ROBOT_SYSTEM_H_
