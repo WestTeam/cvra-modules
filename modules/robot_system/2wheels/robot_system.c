@@ -81,7 +81,7 @@ void rs_init( struct robot_system * rs)
 }
 
 #ifdef CONFIG_MODULE_ROBOT_SYSTEM_MOT_AND_EXT
-void rs_set_ratio(struct robot_system * rs, double ratio)
+void rs_set_ratio(struct robot_system * rs, float ratio)
 {
     rs->ratio_mot_ext = ratio;
 }
@@ -101,7 +101,7 @@ void rs_set_right_pwm(struct robot_system * rs, void (*right_pwm)(void *, int32_
 
 #ifdef CONFIG_MODULE_ROBOT_SYSTEM_MOT_AND_EXT
 void rs_set_left_mot_encoder(struct robot_system * rs, int32_t (*left_mot_encoder)(void *),
-                 void *left_mot_encoder_param, double gain)
+                 void *left_mot_encoder_param, float gain)
 {
     rs->left_mot_encoder = left_mot_encoder;
     rs->left_mot_encoder_param = left_mot_encoder_param;
@@ -109,7 +109,7 @@ void rs_set_left_mot_encoder(struct robot_system * rs, int32_t (*left_mot_encode
 }
 
 void rs_set_right_mot_encoder(struct robot_system * rs, int32_t (*right_mot_encoder)(void *),
-                  void *right_mot_encoder_param, double gain)
+                  void *right_mot_encoder_param, float gain)
 {
     rs->right_mot_encoder = right_mot_encoder;
     rs->right_mot_encoder_param = right_mot_encoder_param;
@@ -118,7 +118,7 @@ void rs_set_right_mot_encoder(struct robot_system * rs, int32_t (*right_mot_enco
 #endif
 
 void rs_set_left_ext_encoder(struct robot_system * rs, int32_t (*left_ext_encoder)(void *),
-                 void *left_ext_encoder_param, double gain)
+                 void *left_ext_encoder_param, float gain)
 {
     rs->left_ext_encoder = left_ext_encoder;
     rs->left_ext_encoder_param = left_ext_encoder_param;
@@ -126,7 +126,7 @@ void rs_set_left_ext_encoder(struct robot_system * rs, int32_t (*left_ext_encode
 }
 
 void rs_set_right_ext_encoder(struct robot_system * rs, int32_t (*right_ext_encoder)(void *),
-                  void *right_ext_encoder_param, double gain)
+                  void *right_ext_encoder_param, float gain)
 {
     rs->right_ext_encoder = right_ext_encoder;
     rs->right_ext_encoder_param = right_ext_encoder_param;
@@ -260,7 +260,7 @@ void rs_update(void * data)
 
     /* apply gains to each wheel */
     if (! (rs->flags & RS_IGNORE_EXT_GAIN )) {
-        double tmp;
+        float tmp;
         tmp = wext.left;
         tmp *= rs->left_ext_gain;
         wext.left = tmp;

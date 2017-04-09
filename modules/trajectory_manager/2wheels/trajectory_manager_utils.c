@@ -42,7 +42,7 @@
 
 
 /** set speed consign in quadramp filter */
-void set_quadramp_speed(struct trajectory *traj, double d_speed, double a_speed)
+void set_quadramp_speed(struct trajectory *traj, float d_speed, float a_speed)
 {
     struct quadramp_filter * q_d, * q_a;
     q_d = traj->csm_distance->consign_filter_params;
@@ -52,7 +52,7 @@ void set_quadramp_speed(struct trajectory *traj, double d_speed, double a_speed)
 }
 
 /** get angle speed consign in quadramp filter */
-double get_quadramp_angle_speed(struct trajectory *traj)
+float get_quadramp_angle_speed(struct trajectory *traj)
 {
     struct quadramp_filter *q_a;
     q_a = traj->csm_angle->consign_filter_params;
@@ -60,7 +60,7 @@ double get_quadramp_angle_speed(struct trajectory *traj)
 }
 
 /** get distance speed consign in quadramp filter */
-double get_quadramp_distance_speed(struct trajectory *traj)
+float get_quadramp_distance_speed(struct trajectory *traj)
 {
     struct quadramp_filter *q_d;
     q_d = traj->csm_distance->consign_filter_params;
@@ -68,7 +68,7 @@ double get_quadramp_distance_speed(struct trajectory *traj)
 }
 
 /** set speed consign in quadramp filter */
-void set_quadramp_acc(struct trajectory *traj, double d_acc, double a_acc)
+void set_quadramp_acc(struct trajectory *traj, float d_acc, float a_acc)
 {
     struct quadramp_filter * q_d, * q_a;
     q_d = traj->csm_distance->consign_filter_params;
@@ -102,7 +102,7 @@ void schedule_event(struct trajectory *traj)
 }
 
 /** do a modulo 2.pi -> [-Pi,+Pi], knowing that 'a' is in [-3Pi,+3Pi] */
-double simple_modulo_2pi(double a)
+float simple_modulo_2pi(float a)
 {
     if (a < -M_PI) {
         a += M_2PI;
@@ -114,43 +114,44 @@ double simple_modulo_2pi(double a)
 }
 
 /** do a modulo 2.pi -> [-Pi,+Pi] */
-double modulo_2pi(double a)
+float modulo_2pi(float a)
 {
-        double res = a - (((int32_t) (a/M_2PI)) * M_2PI);
+        float res = a - (((int32_t) (a/M_2PI)) * M_2PI);
     return simple_modulo_2pi(res);
 }
 
 /** near the target (dist) ? */
-uint8_t is_robot_in_dist_window(struct trajectory *traj, double d_win)
+uint8_t is_robot_in_dist_window(struct trajectory *traj, float d_win)
 {
-    double d = traj->target.pol.distance - rs_get_distance(traj->robot);
+    float d = traj->target.pol.distance - rs_get_distance(traj->robot);
     d = ABS(d);
-    d = d / traj->position->phys.distance_imp_per_mm;
+/*    d = d / traj->position->phys.distance_imp_per_mm; */
     return (d < d_win);
 }
 
 /** near the target (dist in x,y) ? */
-uint8_t is_robot_in_xy_window(struct trajectory *traj, double d_win)
+uint8_t is_robot_in_xy_window(struct trajectory *traj, float d_win)
 {
-    double x1 = traj->target.cart.x;
-    double y1 = traj->target.cart.y;
-    double x2 = position_get_x_double(traj->position);
-    double y2 = position_get_y_double(traj->position);
+    float x1 = traj->target.cart.x;
+    float y1 = traj->target.cart.y;
+    float x2 = position_get_x_float(traj->position);
+    float y2 = position_get_y_float(traj->position);
     return ( __ieee754_sqrtf ((x2-x1) * (x2-x1) + (y2-y1) * (y2-y1)) < d_win );
 }
 
 /** near the angle target in radian ? Only valid if
  *  traj->target.pol.angle is set (i.e. an angle command, not an xy
  *  command) */
-uint8_t is_robot_in_angle_window(struct trajectory *traj, double a_win_rad)
+uint8_t is_robot_in_angle_window(struct trajectory *traj, float a_win_rad)
 {
-    double a;
+    float a;
 
     /* convert relative angle from imp to rad */
     a = traj->target.pol.angle - rs_get_angle(traj->robot);
-    a /= traj->position->phys.distance_imp_per_mm;
+/*    a /= traj->position->phys.distance_imp_per_mm;
     a /= traj->position->phys.track_mm;
     a *= 2.;
+*/
     return ABS(a) < a_win_rad;
 }
 
@@ -176,37 +177,37 @@ int trajectory_turning(struct trajectory *traj) {
 
 
 /* distance unit conversions */
-
-double pos_mm2imp(struct trajectory *traj, double pos)
+#if 0
+float pos_mm2imp(struct trajectory *traj, float pos)
 {
     return pos * traj->position->phys.distance_imp_per_mm;
 }
 
-double pos_imp2mm(struct trajectory *traj, double pos)
+float pos_imp2mm(struct trajectory *traj, float pos)
 {
     return pos / traj->position->phys.distance_imp_per_mm;
 }
 
-double speed_mm2imp(struct trajectory *traj, double speed)
+float speed_mm2imp(struct trajectory *traj, float speed)
 {
     return speed *
         traj->position->phys.distance_imp_per_mm /
         traj->cs_hz;
 }
 
-double speed_imp2mm(struct trajectory *traj, double speed)
+float speed_imp2mm(struct trajectory *traj, float speed)
 {
     return speed * traj->cs_hz /
         traj->position->phys.distance_imp_per_mm;
 }
 
-double acc_mm2imp(struct trajectory *traj, double acc)
+float acc_mm2imp(struct trajectory *traj, float acc)
 {
     return acc * traj->position->phys.distance_imp_per_mm /
         (traj->cs_hz * traj->cs_hz);
 }
 
-double acc_imp2mm(struct trajectory *traj, double acc)
+float acc_imp2mm(struct trajectory *traj, float acc)
 {
     return acc * traj->cs_hz * traj->cs_hz /
         traj->position->phys.distance_imp_per_mm;
@@ -214,21 +215,21 @@ double acc_imp2mm(struct trajectory *traj, double acc)
 
 /* angle unit conversions */
 
-double pos_rd2imp(struct trajectory *traj, double pos)
+float pos_rd2imp(struct trajectory *traj, float pos)
 {
     return pos *
         (traj->position->phys.distance_imp_per_mm *
          traj->position->phys.track_mm / 2.);
 }
 
-double pos_imp2rd(struct trajectory *traj, double pos)
+float pos_imp2rd(struct trajectory *traj, float pos)
 {
     return pos /
         (traj->position->phys.distance_imp_per_mm *
          traj->position->phys.track_mm / 2.);
 }
 
-double speed_rd2imp(struct trajectory *traj, double speed)
+float speed_rd2imp(struct trajectory *traj, float speed)
 {
     return speed *
         (traj->position->phys.distance_imp_per_mm *
@@ -236,7 +237,7 @@ double speed_rd2imp(struct trajectory *traj, double speed)
          (2. * traj->cs_hz));
 }
 
-double speed_imp2rd(struct trajectory *traj, double speed)
+float speed_imp2rd(struct trajectory *traj, float speed)
 {
     return speed /
         (traj->position->phys.distance_imp_per_mm *
@@ -244,7 +245,7 @@ double speed_imp2rd(struct trajectory *traj, double speed)
          (2. * traj->cs_hz));
 }
 
-double acc_rd2imp(struct trajectory *traj, double acc)
+float acc_rd2imp(struct trajectory *traj, float acc)
 {
     return acc *
         (traj->position->phys.distance_imp_per_mm *
@@ -252,11 +253,11 @@ double acc_rd2imp(struct trajectory *traj, double acc)
          (2. * traj->cs_hz * traj->cs_hz));
 }
 
-double acc_imp2rd(struct trajectory *traj, double acc)
+float acc_imp2rd(struct trajectory *traj, float acc)
 {
     return acc /
         (traj->position->phys.distance_imp_per_mm *
          traj->position->phys.track_mm /
          (2. * traj->cs_hz * traj->cs_hz));
 }
-
+#endif 

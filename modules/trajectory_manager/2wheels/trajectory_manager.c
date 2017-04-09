@@ -40,7 +40,7 @@
 /************ INIT FUNCS */
 
 /** structure initialization */
-void trajectory_init(struct trajectory *traj, double cs_hz)
+void trajectory_init(struct trajectory *traj, float cs_hz)
 {
     memset(traj, 0, sizeof(struct trajectory));
     traj->cs_hz = cs_hz;
@@ -65,22 +65,22 @@ void trajectory_set_robot_params(struct trajectory *traj,
 }
 
 /** set speed consign */
-void trajectory_set_speed(struct trajectory *traj, double d_speed, double a_speed)
+void trajectory_set_speed(struct trajectory *traj, float d_speed, float a_speed)
 {
     traj->d_speed = d_speed;
     traj->a_speed = a_speed;
 }
 
 /** set acc consign */
-void trajectory_set_acc(struct trajectory *traj, double d_acc, double a_acc)
+void trajectory_set_acc(struct trajectory *traj, float d_acc, float a_acc)
 {
     traj->d_acc = d_acc;
     traj->a_acc = a_acc;
 }
 
 /** set windows for trajectory */
-void trajectory_set_windows(struct trajectory *traj, double d_win,
-                double a_win_deg, double a_start_deg)
+void trajectory_set_windows(struct trajectory *traj, float d_win,
+                float a_win_deg, float a_start_deg)
 {
     traj->d_win = d_win ;
     traj->a_win_rad = RAD(a_win_deg);

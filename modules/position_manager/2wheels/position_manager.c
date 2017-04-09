@@ -25,30 +25,30 @@
 #include <2wheels/robot_system.h>
 #include <2wheels/position_manager.h>
 
-#if 0
+
 
 /** initialization of the robot_position pos, everthing is set to 0 */
 void position_init(struct robot_position *pos)
 {
     memset(pos, 0, sizeof(struct robot_position));
-    platform_create_semaphore(&pos->lock, 1);
+    //platform_create_semaphore(&pos->lock, 1);
 }
 
 /** Set a new robot position */
-void position_set(struct robot_position *pos, int16_t x, int16_t y, double a_deg)
+void position_set(struct robot_position *pos, int16_t x, int16_t y, float a_deg)
 {
-    platform_take_semaphore(&pos->lock);
+    //platform_take_semaphore(&pos->lock);
     pos->pos_d.a = (a_deg * M_PI)/ 180.0;
     pos->pos_d.x = x;
     pos->pos_d.y = y;
     pos->pos_s16.x = x;
     pos->pos_s16.y = y;
     pos->pos_s16.a = a_deg;
-    platform_signal_semaphore(&pos->lock);
+    //platform_signal_semaphore(&pos->lock);
 }
 
 #ifdef CONFIG_MODULE_COMPENSATE_CENTRIFUGAL_FORCE
-void position_set_centrifugal_coef(struct robot_position *pos, double coef)
+void position_set_centrifugal_coef(struct robot_position *pos, float coef)
 {
     pos->centrifugal_coef = coef;
 }
@@ -59,6 +59,7 @@ void position_set_centrifugal_coef(struct robot_position *pos, double coef)
  * The robot_system structure is used to get values from virtual encoders
  * that return angle and distance.
  */
+#if 0
 void position_set_related_robot_system(struct robot_position *pos, struct robot_system *rs)
 {
     pos->rs = rs;
@@ -69,8 +70,8 @@ void position_set_related_robot_system(struct robot_position *pos, struct robot_
  *  - number of impulsions for 1 mm (distance)
  *  - number of impulsions for 1 degree (angle)
  */
-void position_set_physical_params(struct robot_position *pos, double track_mm,
-                  double distance_imp_per_mm)
+void position_set_physical_params(struct robot_position *pos, float track_mm,
+                  float distance_imp_per_mm)
 {
     pos->phys.track_mm = track_mm;
     pos->phys.distance_imp_per_mm = distance_imp_per_mm;

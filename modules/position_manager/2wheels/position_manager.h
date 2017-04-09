@@ -25,7 +25,7 @@
 
 #include <stdint.h>
 //#include <platform.h>
-#include <math.h>
+//#include <math.h>
 #include <2wheels/robot_system.h>
 #include <vect2.h>
 
@@ -97,21 +97,21 @@
  */
 struct robot_physical_params
 {
-    double track_mm;            /**< Track (distance between wheels) in mm */
-    double distance_imp_per_mm; /**< Impulsions per mm */
+    float track_mm;            /**< Track (distance between wheels) in mm */
+    float distance_imp_per_mm; /**< Impulsions per mm */
 };
 
 
-/** @brief Stores a cartesian position in double.
+/** @brief Stores a cartesian position in float.
  *
- * This structure holds a position of the robot in the double precision format.
+ * This structure holds a position of the robot in the float precision format.
  * @sa xya_position_s16
  */
 struct xya_position
 {
-    double x; /**< The X coordinate, in mm. */
-    double y; /**< The Y coordinate, in mm. */
-    double a; /**< The angle relative to the X axis, in radians. */
+    float x; /**< The X coordinate, in mm. */
+    float y; /**< The Y coordinate, in mm. */
+    float a; /**< The angle relative to the X axis, in radians. */
 };
 
 /**@brief Stores a cartesian position in int.
@@ -134,12 +134,12 @@ struct xya_position_s16
  */
 struct robot_position
 {
-    uint8_t use_ext;                    /**< Only useful when we have 2 sets of encoders. */
-    struct robot_physical_params phys;  /**< The physical parameters of the robot. */
-    struct xya_position pos_d;          /**< Position of the robot in double. */
+    //uint8_t use_ext;                    /**< Only useful when we have 2 sets of encoders. */
+    //struct robot_physical_params phys;  /**< The physical parameters of the robot. */
+    struct xya_position pos_d;          /**< Position of the robot in float. */
     struct xya_position_s16 pos_s16;    /**< Position of the robot in integers. */
-    struct rs_polar prev_encoders;      /**< Previous state of the encoders. */
-    struct robot_system *rs;            /**< Robot system used for the computations. */
+    //struct rs_polar prev_encoders;      /**< Previous state of the encoders. */
+    //struct robot_system *rs;            /**< Robot system used for the computations. */
 
 #ifdef CONFIG_MODULE_COMPENSATE_CENTRIFUGAL_FORCE
     double centrifugal_coef;            /**< Coefficient for the centrifugal computation */
@@ -163,7 +163,7 @@ void position_init(struct robot_position *pos);
  * @param [in] coef The centrifugal force coefficient.
  * @sa CONFIG_MODULE_COMPENSATE_CENTRIFUGAL_FORCE
  */
-void position_set_centrifugal_coef(struct robot_position *pos, double coef);
+void position_set_centrifugal_coef(struct robot_position *pos, float coef);
 #endif
 
 /** @brief Set a new robot position.
@@ -171,7 +171,7 @@ void position_set_centrifugal_coef(struct robot_position *pos, double coef);
  * @param [in] x, y The new coordinate of the robot, in mm.
  * @param [in] a_deg The new angle of the robot, in degree.
  */
-void position_set(struct robot_position *pos, int16_t x, int16_t y, double a_deg);
+void position_set(struct robot_position *pos, int16_t x, int16_t y, float a_deg);
 
 /** @brief Tells the robot to use the separate wheels encoders.
  *
@@ -195,8 +195,8 @@ void position_use_mot(struct robot_position *pos);
  * @param [in] track_mm The distance between the wheels, in mm.
  * @param [in] distance_imp_per_mm The number of encoder pulses for one mm.
  */
-void position_set_physical_params(struct robot_position *pos, double track_mm,
-                  double distance_imp_per_mm);
+void position_set_physical_params(struct robot_position *pos, float track_mm,
+                  float distance_imp_per_mm);
 
 /** @brief Set related robot_system structure.
  *

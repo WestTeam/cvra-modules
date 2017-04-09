@@ -36,16 +36,16 @@
 #define TRAJ_EVT_PRIO 23
 
 /** set speed consign in quadramp filter */
-void set_quadramp_speed(struct trajectory *traj, double d_speed, double a_speed);
+void set_quadramp_speed(struct trajectory *traj, float d_speed, float a_speed);
 
 /** set acc consign in quadramp filter */
-void set_quadramp_acc(struct trajectory *traj, double d_acc, double a_acc);
+void set_quadramp_acc(struct trajectory *traj, float d_acc, float a_acc);
 
 /** get angle speed consign in quadramp filter */
-double get_quadramp_angle_speed(struct trajectory *traj);
+float get_quadramp_angle_speed(struct trajectory *traj);
 
 /** get distance speed consign in quadramp filter */
-double get_quadramp_distance_speed(struct trajectory *traj);
+float get_quadramp_distance_speed(struct trajectory *traj);
 
 /** remove event if any */
 void delete_event(struct trajectory *traj);
@@ -54,34 +54,34 @@ void delete_event(struct trajectory *traj);
 void schedule_event(struct trajectory *traj);
 
 /** do a modulo 2.pi -> [-Pi,+Pi], knowing that 'a' is in [-3Pi,+3Pi] */
-double simple_modulo_2pi(double a);
+float simple_modulo_2pi(float a);
 
 /** do a modulo 2.pi -> [-Pi,+Pi] */
-double modulo_2pi(double a);
+float modulo_2pi(float a);
 
 /** near the target (dist) ? */
-uint8_t is_robot_in_dist_window(struct trajectory *traj, double d_win);
+uint8_t is_robot_in_dist_window(struct trajectory *traj, float d_win);
 
 /** near the target (dist in x,y) ? */
-uint8_t is_robot_in_xy_window(struct trajectory *traj, double d_win);
+uint8_t is_robot_in_xy_window(struct trajectory *traj, float d_win);
 
 /** near the angle target in radian ? Only valid if
  *  traj->target.pol.angle is set (i.e. an angle command, not an xy
  *  command) */
-uint8_t is_robot_in_angle_window(struct trajectory *traj, double a_win_rad);
+uint8_t is_robot_in_angle_window(struct trajectory *traj, float a_win_rad);
 
-double pos_mm2imp(struct trajectory *traj, double pos);
-double pos_imp2mm(struct trajectory *traj, double pos);
-double speed_mm2imp(struct trajectory *traj, double speed);
-double speed_imp2mm(struct trajectory *traj, double speed);
-double acc_mm2imp(struct trajectory *traj, double acc);
-double acc_imp2mm(struct trajectory *traj, double acc);
-double pos_rd2imp(struct trajectory *traj, double pos);
-double pos_imp2rd(struct trajectory *traj, double pos);
-double speed_rd2imp(struct trajectory *traj, double speed);
-double speed_imp2rd(struct trajectory *traj, double speed);
-double acc_rd2imp(struct trajectory *traj, double acc);
-double acc_imp2rd(struct trajectory *traj, double acc);
+float pos_mm2imp(struct trajectory *traj, float pos);
+float pos_imp2mm(struct trajectory *traj, float pos);
+float speed_mm2imp(struct trajectory *traj, float speed);
+float speed_imp2mm(struct trajectory *traj, float speed);
+float acc_mm2imp(struct trajectory *traj, float acc);
+float acc_imp2mm(struct trajectory *traj, float acc);
+float pos_rd2imp(struct trajectory *traj, float pos);
+float pos_imp2rd(struct trajectory *traj, float pos);
+float speed_rd2imp(struct trajectory *traj, float speed);
+float speed_imp2rd(struct trajectory *traj, float speed);
+float acc_rd2imp(struct trajectory *traj, float acc);
+float acc_imp2rd(struct trajectory *traj, float acc);
 int trajectory_moving_backward(struct trajectory *traj);
 int trajectory_moving_forward(struct trajectory *traj);
 int trajectory_turning(struct trajectory *traj);

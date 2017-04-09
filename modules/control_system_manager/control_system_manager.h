@@ -19,35 +19,35 @@
 
 /** The data structure used by the control_system_manager module */
 struct cs {
-    int32_t (*consign_filter)(void *, int32_t); /**< Callback function for the consign filter, eg: ramp. */
+    float (*consign_filter)(void *, float); /**< Callback function for the consign filter, eg: ramp. */
     void* consign_filter_params; /**< Parameter for consign_filter, will be passed as 1st param. */
 
-    int32_t (*correct_filter)(void*, int32_t); /**< Callback function for the correct filter, eg: PID. */
+    float (*correct_filter)(void*, float); /**< Callback function for the correct filter, eg: PID. */
     void* correct_filter_params; /**< Parameter for correct_filter, will be passed as 1st param. */
 
-    int32_t (*feedback_filter)(void*, int32_t); /**< Callback function for the feedback filter, eg: low pass. */
+    float (*feedback_filter)(void*, float); /**< Callback function for the feedback filter, eg: low pass. */
     void* feedback_filter_params; /**< Parameter for feedback_filter, will be passed as 1st param. */
 
     /** Callback function for the output filter, eg: torque limiter or inertia adapter.
      * @note This may not be the best way to do it. */
-    int32_t (*output_filter)(void*, int32_t);
+    float (*output_filter)(void*, float);
     void* output_filter_params; /**< Parameter for output_filter, will be passed as 1st param. */
 
-    int32_t (*process_out)(void*); /**< Callback function to get process out, eg : encoder value. */
+    float (*process_out)(void*); /**< Callback function to get process out, eg : encoder value. */
     void* process_out_params; /**< Parameter for process_out, will be passed as 1st param. */
 
-    void (*process_in)(void*, int32_t); /**< Callback function to set process in, eg: PWM. */
+    void (*process_in)(void*, float); /**< Callback function to set process in, eg: PWM. */
     void* process_in_params; /**< Parameter for process_out, will be passed as 1st param. */
 
 
-    int32_t consign_value; /**< Consign value for the control system. */
+    float consign_value; /**< Consign value for the control system. */
     /** Feedback from the process after going through feedback_filter() */
-    int32_t filtered_feedback_value;
+    float filtered_feedback_value;
 
     /** Consign for the system after going through consign_filter. This will be feeded to correct_filter. */
-    int32_t filtered_consign_value;
-    int32_t error_value; /**< Error value. This is filtered_consign_value - filtered_feedback_value. */
-    int32_t out_value; /**< Output of correct_filter, as sent to process_in. */
+    float filtered_consign_value;
+    float error_value; /**< Error value. This is filtered_consign_value - filtered_feedback_value. */
+    float out_value; /**< Output of correct_filter, as sent to process_in. */
     int enabled; /**< =1 if the control system is enabled, 0 otherwise. */
 };
 
@@ -64,7 +64,7 @@ void cs_init(struct cs* cs);
  * @param [in] *consign_filter_params The first parameter of consign_filter.
  */
 void cs_set_consign_filter(struct cs* cs,
-                                  int32_t (*consign_filter)(void*, int32_t),
+                                  float (*consign_filter)(void*, float),
                                   void* consign_filter_params);
 
 /** Set the cs correct_filter fields in the cs structure.
@@ -74,7 +74,7 @@ void cs_set_consign_filter(struct cs* cs,
  *
  */
 void  cs_set_correct_filter(struct cs* cs,
-                                   int32_t (*correct_filter)(void*, int32_t),
+                                   float (*correct_filter)(void*, float),
                                    void* correct_filer_params);
 
 /** Set the cs feedback_filter fields in the cs structure.
@@ -83,7 +83,7 @@ void  cs_set_correct_filter(struct cs* cs,
  * @param [in] *feedback_filer_params The first parameter of feedback_filter.
  */
 void  cs_set_feedback_filter(struct cs* cs,
-                                    int32_t (*feedback_filter)(void*, int32_t),
+                                    float (*feedback_filter)(void*, float),
                                     void* feedback_filer_params);
 
 /** Set the cs output_filter fields in the cs structure.
@@ -92,7 +92,7 @@ void  cs_set_feedback_filter(struct cs* cs,
  * @param [in] *output_filter_params The first parameter of output_filter.
  */
 void  cs_set_output_filter(struct cs* cs,
-                                    int32_t (*output_filter)(void*, int32_t),
+                                    float (*output_filter)(void*, float),
                                     void* output_filer_params);
 
 /** Set the cs process_in fields in the cs structure.
@@ -101,7 +101,7 @@ void  cs_set_output_filter(struct cs* cs,
  * @param [in] *process_in_params The first argument of process_in.
  */
 void cs_set_process_in(struct cs* cs,
-                              void (*process_in)(void*, int32_t),
+                              void (*process_in)(void*, float),
                               void* process_in_params);
 
 /** Set the cs process_out fields in the cs structure.
@@ -110,7 +110,7 @@ void cs_set_process_in(struct cs* cs,
  * @param [in] *process_out_params The first argument of process_out.
  */
 void cs_set_process_out(struct cs* cs,
-                               int32_t (*process_out)(void*),
+                               float (*process_out)(void*),
                                void* process_out_params);
 
 
@@ -130,7 +130,7 @@ void cs_set_process_out(struct cs* cs,
  *
  *   @returns The value that was put at the process input.
  */
-int32_t cs_do_process(struct cs* cs, int32_t consign);
+float cs_do_process(struct cs* cs, float consign);
 
 /** Apply cs_do_process() to the structure cs
  *  @param [in] cs A cs structure instance, cast to void *.
@@ -142,31 +142,31 @@ void cs_manage(void * cs);
 /** Return the last output sent to process.
  * @param [in] cs A cs structure instance.
  * @returns Last output of the control system, as sent to process in. */
-int32_t cs_get_out(struct cs* cs);
+float cs_get_out(struct cs* cs);
 
 /** Return the last calculated error.
  * @param [in] cs A cs structure instance.
  * @returns The last error of the control system.
  */
-int32_t cs_get_error(struct cs* cs);
+float cs_get_error(struct cs* cs);
 
 /** Return the current consign.
  * @param [in] cs A cs structure instance.
  * @returns Consign of the control system.
  */
-int32_t cs_get_consign(struct cs* cs);
+float cs_get_consign(struct cs* cs);
 
 /** Return the current consign, after filter.
  * @param [in] cs A control system instance.
  * @returns The last consign after the filter (eg: once processed by the ramp.)
  */
-int32_t cs_get_filtered_consign(struct cs* cs);
+float cs_get_filtered_consign(struct cs* cs);
 
 /** Return the last feedback value, after filter.
  * @param [in] cs A control system instance.
  * @returns The last feedback of the filter after the feedback filter.
  */
-int32_t cs_get_filtered_feedback(struct cs* cs);
+float cs_get_filtered_feedback(struct cs* cs);
 
 
 /** Gets the feedback value, with no filter
@@ -177,7 +177,7 @@ int32_t cs_get_filtered_feedback(struct cs* cs);
  * @param [in] cs A control system instance.
  * @returns The unfiltered feeback.
  */
-int32_t cs_get_feedback(struct cs* cs);
+float cs_get_feedback(struct cs* cs);
 
 /** @brief Set system consign.
  *
@@ -187,7 +187,7 @@ int32_t cs_get_feedback(struct cs* cs);
  * @param [in] cs A control system instance.
  * @param [in] v The new consign.
  */
-void cs_set_consign(struct cs* cs, int32_t v);
+void cs_set_consign(struct cs* cs, float v);
 
 /** Disables the control system (it will output zero).
  * @param [in] cs A control system instance.

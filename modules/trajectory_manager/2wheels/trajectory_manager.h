@@ -74,7 +74,7 @@ enum trajectory_state {
 /** Movement target when running on a circle. */
 struct circle_target {
     vect2_cart center;   /**< center of the circle */
-    double radius;       /**< radius of the circle */
+    float radius;       /**< radius of the circle */
     int32_t dest_angle;  /**< dst angle in inc */
     int32_t dest_distance;  /**< dst angle in inc */
 
@@ -86,15 +86,15 @@ struct circle_target {
 /** Movement target when running a line or a clitoid. */
 struct line_target {
     line_t line;  /**< The line to follow. */
-    double angle; /**< The angle of line. */
-    double advance; /**< The sampling factor. */
+    float angle; /**< The angle of line. */
+    float advance; /**< The sampling factor. */
 
     /* only for clitoid */
     point_t turn_pt; /**< The starting point of the clitoid. */
-    double Aa;  /**< The angular acceleration. */
-    double Va; /**< The angular speed. */
-    double alpha; /**< The angle to turn. */
-    double R; /**< The radius of the circular part. */
+    float Aa;  /**< The angular acceleration. */
+    float Va; /**< The angular speed. */
+    float alpha; /**< The angle to turn. */
+    float R; /**< The radius of the circular part. */
 };
 
 /** A complete instance of the trajectory manager. */
@@ -108,23 +108,23 @@ struct trajectory {
         struct line_target line;     /**< target, if it is a line */
     } target;                        /**< Target of the movement. */
 
-    double d_win;      /**<< distance window (for END_NEAR) */
-    double a_win_rad;  /**<< angle window (for END_NEAR) */
-    double a_start_rad;/**<< in xy consigns, start to move in distance
+    float d_win;      /**<< distance window (for END_NEAR) */
+    float a_win_rad;  /**<< angle window (for END_NEAR) */
+    float a_start_rad;/**<< in xy consigns, start to move in distance
                          *   when a_target < a_start */
 
-    double d_speed;  /**<< distance speed consign */
-    double a_speed;  /**<< angle speed consign */
+    float d_speed;  /**<< distance speed consign */
+    float a_speed;  /**<< angle speed consign */
 
-    double d_acc;    /**<< distance acceleration consign */
-    double a_acc;    /**<< angle acceleration consign */
+    float d_acc;    /**<< distance acceleration consign */
+    float a_acc;    /**<< angle acceleration consign */
 
     struct robot_position *position; /**<< associated robot_position */
     struct robot_system *robot;      /**<< associated robot_system */
     struct cs *csm_angle;     /**<< associated control system (angle) */
     struct cs *csm_distance;  /**<< associated control system (distance) */
 
-    double cs_hz;   /**< The frequency of the control system associated with this manager. */
+    float cs_hz;   /**< The frequency of the control system associated with this manager. */
 
     //INT8U scheduler_task;    /**<< id of the task. */
     //OS_STK task_stk[2048];
@@ -134,7 +134,7 @@ struct trajectory {
  *
  * @param [in] traj The trajectory manager to initialize.
  * @param [in] cs_hz The frequency of the control systems, in Hz. */
-void trajectory_init(struct trajectory *traj, double cs_hz);
+void trajectory_init(struct trajectory *traj, float cs_hz);
 
 /** @brief Sets the control systems.
  *
@@ -167,7 +167,7 @@ void trajectory_set_robot_params(struct trajectory *traj,
  * @sa speed_mm2imp
  * @sa speed_rd2imp
  */
-void trajectory_set_speed(struct trajectory *traj, double d_speed, double a_speed);
+void trajectory_set_speed(struct trajectory *traj, float d_speed, float a_speed);
 
 /** @brief Set acceleration consign.
  *
@@ -178,7 +178,7 @@ void trajectory_set_speed(struct trajectory *traj, double d_speed, double a_spee
  * @sa acc_mm2imp
  * @sa acc_rd2imp
  */
-void trajectory_set_acc(struct trajectory *traj, double d_acc, double a_acc);
+void trajectory_set_acc(struct trajectory *traj, float d_acc, float a_acc);
 
 /** @brief Set windows for trajectory.
  *
@@ -194,8 +194,8 @@ void trajectory_set_acc(struct trajectory *traj, double d_acc, double a_acc);
  * @param [in] a_win_deg The angular window in degrees.
  * @param [in] a_start_deg The angular start window in degrees.
  */
-void trajectory_set_windows(struct trajectory *traj, double d_win,
-                double a_win_deg, double a_start_deg);
+void trajectory_set_windows(struct trajectory *traj, float d_win,
+                float a_win_deg, float a_start_deg);
 
 /** @brief Get trajectory manager state.
  *
@@ -235,7 +235,7 @@ uint8_t trajectory_distance_finished(struct trajectory *traj);
  * @param [in] a_win_rad The angle window in rad.
  * @return 1 if the trajectory manager is in the given windows.
  */
-uint8_t trajectory_in_window(struct trajectory *traj, double d_win, double a_win_rad);
+uint8_t trajectory_in_window(struct trajectory *traj, float d_win, float a_win_rad);
 
 /* simple commands */
 
@@ -274,7 +274,7 @@ void trajectory_hardstop(struct trajectory *traj);
  * @param [in] traj The trajectory manager instance.
  * @param [in] d_mm The distance, in mm.
  */
-void trajectory_d_rel(struct trajectory *traj, double d_mm);
+void trajectory_d_rel(struct trajectory *traj, float d_mm);
 
 /** @brief Goes straight.
  *
@@ -286,7 +286,7 @@ void trajectory_d_rel(struct trajectory *traj, double d_mm);
  * @param [in] traj The trajectory manager instance.
  * @param [in] d_mm The distance consign in mm.
  */
-void trajectory_only_d_rel(struct trajectory *traj, double d_mm);
+void trajectory_only_d_rel(struct trajectory *traj, float d_mm);
 
 /** @brief Turn by a given angle.
  *
@@ -298,7 +298,7 @@ void trajectory_only_d_rel(struct trajectory *traj, double d_mm);
  * @sa trajectory_only_a_abs
  * @sa trajectory_only_a_rel
  */
-void trajectory_a_rel(struct trajectory *traj, double a_deg);
+void trajectory_a_rel(struct trajectory *traj, float a_deg);
 
 /** @brief Turn to a given angle.
  *
@@ -308,7 +308,7 @@ void trajectory_a_rel(struct trajectory *traj, double a_deg);
  * @param [in] a_deg The angle in degrees.
  * @sa trajectory_a_rel
  */
-void trajectory_a_abs(struct trajectory *traj, double a_deg);
+void trajectory_a_abs(struct trajectory *traj, float a_deg);
 
 /** @brief Makes the robot face a given point.
  *
@@ -318,7 +318,7 @@ void trajectory_a_abs(struct trajectory *traj, double a_deg);
  * @param [in] x_abs_mm, y_abs_mm The coordinate of the point in mm.
  * @sa trajectory_turnto_xy_behind
  */
-void trajectory_turnto_xy(struct trajectory*traj, double x_abs_mm, double y_abs_mm);
+void trajectory_turnto_xy(struct trajectory*traj, float x_abs_mm, float y_abs_mm);
 
 /** @brief Makes the robot turn its back to a given point.
  *
@@ -328,7 +328,7 @@ void trajectory_turnto_xy(struct trajectory*traj, double x_abs_mm, double y_abs_
  * @param [in] x_abs_mm, y_abs_mm The coordinate of the point in mm.
  * @sa trajectory_turnto_xy_behind
  */
-void trajectory_turnto_xy_behind(struct trajectory*traj, double x_abs_mm, double y_abs_mm);
+void trajectory_turnto_xy_behind(struct trajectory*traj, float x_abs_mm, float y_abs_mm);
 
 /** @brief Makes the robot turn by given angle.
  *
@@ -342,7 +342,7 @@ void trajectory_turnto_xy_behind(struct trajectory*traj, double x_abs_mm, double
  * @sa trajectory_a_rel
  * @sa trajectory_only_a_abs
  */
-void trajectory_only_a_rel(struct trajectory *traj, double a_deg);
+void trajectory_only_a_rel(struct trajectory *traj, float a_deg);
 
 /** @brief Makes the robot turn to given angle.
  *
@@ -356,7 +356,7 @@ void trajectory_only_a_rel(struct trajectory *traj, double a_deg);
  * @sa trajectory_a_rel
  * @sa trajectory_only_a_rel
  */
-void trajectory_only_a_abs(struct trajectory *traj, double a_deg);
+void trajectory_only_a_abs(struct trajectory *traj, float a_deg);
 
 /** @brief Makes the robot move and turn.
  *
@@ -370,7 +370,7 @@ void trajectory_only_a_abs(struct trajectory *traj, double a_deg);
  * @param [in] d_mm The distance to go, in mm.
  * @param [in] a_deg The angle to turn, in degrees.
  */
-void trajectory_d_a_rel(struct trajectory *traj, double d_mm, double a_deg);
+void trajectory_d_a_rel(struct trajectory *traj, float d_mm, float a_deg);
 
 /* commands using events */
 
@@ -387,7 +387,7 @@ void trajectory_d_a_rel(struct trajectory *traj, double d_mm, double a_deg);
  * @sa trajectory_goto_forward_xy_abs
  * @sa trajectory_goto_backward_xy_abs
  */
-void trajectory_goto_xy_abs(struct trajectory *traj, double x_abs_mm, double y_abs_mm);
+void trajectory_goto_xy_abs(struct trajectory *traj, float x_abs_mm, float y_abs_mm);
 
 /** @brief Go to a point
  *
@@ -398,7 +398,7 @@ void trajectory_goto_xy_abs(struct trajectory *traj, double x_abs_mm, double y_a
  * @param [in] x_abs_mm, y_abs_mm The coordinate of the point.
  * @sa trajectory_goto_xy_abs
  */
-void trajectory_goto_forward_xy_abs(struct trajectory *traj, double x_abs_mm, double y_abs_mm);
+void trajectory_goto_forward_xy_abs(struct trajectory *traj, float x_abs_mm, float y_abs_mm);
 
 /** @brief Go to a point
  *
@@ -409,7 +409,7 @@ void trajectory_goto_forward_xy_abs(struct trajectory *traj, double x_abs_mm, do
  * @param [in] x_abs_mm, y_abs_mm The coordinate of the point.
  * @sa trajectory_goto_xy_abs
  */
-void trajectory_goto_backward_xy_abs(struct trajectory *traj, double x_abs_mm, double y_abs_mm);
+void trajectory_goto_backward_xy_abs(struct trajectory *traj, float x_abs_mm, float y_abs_mm);
 
 /** @brief Go to a point given in polar coordinates.
  *
@@ -419,7 +419,7 @@ void trajectory_goto_backward_xy_abs(struct trajectory *traj, double x_abs_mm, d
  * @param [in] d The distance in mm.
  * @param [in] a The angle in degrees.
  */
-void trajectory_goto_d_a_rel(struct trajectory *traj, double d, double a);
+void trajectory_goto_d_a_rel(struct trajectory *traj, float d, float a);
 
 /** @brief Go to a relative point.
  *
@@ -430,7 +430,7 @@ void trajectory_goto_d_a_rel(struct trajectory *traj, double d, double a);
  * @param [in] traj The trajectory manager instance.
  * @param [in] x_rel_mm, y_rel_mm The coordinate of the point, in mm.
  */
-void trajectory_goto_xy_rel(struct trajectory *traj, double x_rel_mm, double y_rel_mm);
+void trajectory_goto_xy_rel(struct trajectory *traj, float x_rel_mm, float y_rel_mm);
 
 /** make the robot orbiting around (x,y) on a circle whose radius is
  * radius_mm, and exit when relative destination angle is reached. The
@@ -455,8 +455,8 @@ void trajectory_goto_xy_rel(struct trajectory *traj, double x_rel_mm, double y_r
  * @sa FORWARD
  * @sa TRIGO
  */
-void trajectory_circle_rel(struct trajectory *traj, double x, double y,
-               double radius_mm, double rel_a_deg, uint8_t flags);
+void trajectory_circle_rel(struct trajectory *traj, float x, float y,
+               float radius_mm, float rel_a_deg, uint8_t flags);
 
 /*
  * Compute the fastest distance and angle speeds matching the radius
@@ -474,9 +474,9 @@ void trajectory_circle_rel(struct trajectory *traj, double x, double y,
  * @param [out] speed_d, speed_a The variable to stock the results.
  */
 void circle_get_da_speed_from_radius(struct trajectory *traj,
-                     double radius_mm,
-                     double *speed_d,
-                     double *speed_a);
+                     float radius_mm,
+                     float *speed_d,
+                     float *speed_a);
 
 /** @brief Do a line.
  *
@@ -495,7 +495,7 @@ void circle_get_da_speed_from_radius(struct trajectory *traj,
  *
  * @todo Test this function.
  */
-void trajectory_line_abs(struct trajectory *traj, double x1, double y1,
-             double x2, double y2, double advance);
+void trajectory_line_abs(struct trajectory *traj, float x1, float y1,
+             float x2, float y2, float advance);
 
 #endif //TRAJECTORY_MANAGER
