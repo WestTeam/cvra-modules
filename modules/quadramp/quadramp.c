@@ -42,63 +42,63 @@ void quadramp_reset(struct quadramp_filter *q)
 }
 
 void quadramp_set_2nd_order_vars(struct quadramp_filter *q,
-				 double var_2nd_ord_pos,
-				 double var_2nd_ord_neg)
+				 float var_2nd_ord_pos,
+				 float var_2nd_ord_neg)
 {
 	q->var_2nd_ord_pos = var_2nd_ord_pos;
 	q->var_2nd_ord_neg = var_2nd_ord_neg;
 }
 
 void quadramp_set_1st_order_vars(struct quadramp_filter *q,
-				 double var_1st_ord_pos,
-				 double var_1st_ord_neg)
+				 float var_1st_ord_pos,
+				 float var_1st_ord_neg)
 {
 	q->var_1st_ord_pos = var_1st_ord_pos;
 	q->var_1st_ord_neg = var_1st_ord_neg;
 }
 
 
-void quadramp_set_position(struct quadramp_filter *q, int32_t pos) {
+void quadramp_set_position(struct quadramp_filter *q, float pos) {
 	q->previous_out = pos;
 	q->previous_var = 0;
 }
 
 uint8_t quadramp_is_finished(struct quadramp_filter *q)
 {
-	return ((int32_t)q->previous_out == q->previous_in &&
+	return ((float)q->previous_out == q->previous_in &&
 		q->previous_var == 0);
 }
 
-int32_t quadramp_do_filter(void * data, int32_t in)
+float quadramp_do_filter(void * data, float in)
 {
 	struct quadramp_filter * q = data;
-	int32_t d; /* remaining distance */
-	int32_t pos_target;
-	double var_1st_ord_pos = q->var_1st_ord_pos;
-	double var_1st_ord_neg = -q->var_1st_ord_neg;
-	double var_2nd_ord_pos = q->var_2nd_ord_pos;
-	double var_2nd_ord_neg = -q->var_2nd_ord_neg;
-	double previous_var, d_float;
-	double previous_out;
+	float d; /* remaining distance */
+	float pos_target;
+	float var_1st_ord_pos = q->var_1st_ord_pos;
+	float var_1st_ord_neg = -q->var_1st_ord_neg;
+	float var_2nd_ord_pos = q->var_2nd_ord_pos;
+	float var_2nd_ord_neg = -q->var_2nd_ord_neg;
+	float previous_var, d_float;
+	float previous_out;
 
 	previous_var = q->previous_var;
 	previous_out = q->previous_out;
 
-	d_float = (double)in - previous_out ;
+	d_float = (float)in - previous_out ;
 
 	/* d is very small, we can jump to dest */
-	if (__fabsf(d_float) < 2.) {
+/*	if (__fabsf(d_float) < 2.) {
 		q->previous_var = 0;
 		q->previous_out = in;
 		q->previous_in = in;
 		return in;
 	}
-
-	d = (int32_t)d_float;
+*/
+	d = (float)d_float;
 
 	/* Deceleration ramp */
-	if (d > 0 && var_2nd_ord_neg) {
-		double ramp_pos;
+	if (d > 0.0 && var_2nd_ord_neg) {
+		float ramp_pos;
 		/* var_2nd_ord_neg < 0 */
 		ramp_pos = __ieee754_sqrtf((var_2nd_ord_neg*var_2nd_ord_neg)/4 -
 				2*d_float*var_2nd_ord_neg) +
@@ -108,8 +108,8 @@ int32_t quadramp_do_filter(void * data, int32_t in)
 			var_1st_ord_pos = ramp_pos;
 	}
 
-	else if (d < 0 && var_2nd_ord_pos) {
-		double ramp_neg;
+	else if (d < 0.0 && var_2nd_ord_pos) {
+		float ramp_neg;
 
 		/* var_2nd_ord_pos > 0 */
 		ramp_neg = -__ieee754_sqrtf( (var_2nd_ord_pos*var_2nd_ord_pos)/4 -
