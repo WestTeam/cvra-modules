@@ -147,7 +147,7 @@ uint8_t is_robot_in_angle_window(struct trajectory *traj, float a_win_rad)
     float a;
 
     /* convert relative angle from imp to rad */
-    a = traj->target.pol.angle - rs_get_angle(traj->robot);
+    a = traj->target.pol.angle - rs_get_ext_angle(traj->robot);
 /*    a /= traj->position->phys.distance_imp_per_mm;
     a /= traj->position->phys.track_mm;
     a *= 2.;

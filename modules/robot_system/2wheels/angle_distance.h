@@ -34,8 +34,8 @@ struct rs_wheels {
 
 /** Stores the state of two encoders or pwm in the distance / angle format. */
 struct rs_polar {
-	int32_t distance; /**< The distance encoder value. */
-	int32_t angle; /**< The angle encoder value. */
+	float distance; /**< The distance encoder value. */
+	float angle; /**< The angle encoder value. */
 };
 
 /** @brief Converts the state of two encoders or pwm.

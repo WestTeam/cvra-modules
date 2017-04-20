@@ -97,7 +97,7 @@ float quadramp_do_filter(void * data, float in)
 	d = (float)d_float;
 
 	/* Deceleration ramp */
-	if (d > 0.0 && var_2nd_ord_neg) {
+	if (d > 0.0 && var_2nd_ord_neg != 0.0) {
 		float ramp_pos;
 		/* var_2nd_ord_neg < 0 */
 		ramp_pos = __ieee754_sqrtf((var_2nd_ord_neg*var_2nd_ord_neg)/4 -
@@ -108,7 +108,7 @@ float quadramp_do_filter(void * data, float in)
 			var_1st_ord_pos = ramp_pos;
 	}
 
-	else if (d < 0.0 && var_2nd_ord_pos) {
+	else if (d < 0.0 && var_2nd_ord_pos != 0.0) {
 		float ramp_neg;
 
 		/* var_2nd_ord_pos > 0 */

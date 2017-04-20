@@ -168,25 +168,25 @@ void rs_set_distance(void * data, int32_t distance)
 */
 }
 
-int32_t rs_get_angle(void * data)
+float rs_get_angle(void * data)
 {
     struct robot_system * rs = data;
     return rs->virtual_encoders.angle ;
 }
 
-int32_t rs_get_distance(void * data)
+float rs_get_distance(void * data)
 {
     struct robot_system * rs = data;
     return rs->virtual_encoders.distance ;
 }
 
-int32_t rs_get_ext_angle(void * data)
+float rs_get_ext_angle(void * data)
 {
     struct robot_system * rs = data;
     return rs->pext_prev.angle ;
 }
 
-int32_t rs_get_ext_distance(void * data)
+float rs_get_ext_distance(void * data)
 {
     struct robot_system * rs = data;
     return rs->pext_prev.distance ;

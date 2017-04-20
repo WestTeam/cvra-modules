@@ -298,7 +298,7 @@ void rs_set_distance(void * rs, int32_t distance);
  * @param [in] rs The robot_system instance.
  * @return The computed value for angle.
  */
-int32_t rs_get_angle(void * rs);
+float rs_get_angle(void * rs);
 
 /** @brief Get the distance encoder value.
  *
@@ -311,7 +311,7 @@ int32_t rs_get_angle(void * rs);
  * @param [in] rs The robot_system instance.
  * @return The computed value for distance.
  */
-int32_t rs_get_distance(void * rs);
+float rs_get_distance(void * rs);
 
 /** @brief Gets the angle based on external encoders.
  *
@@ -322,7 +322,7 @@ int32_t rs_get_distance(void * rs);
  * @param [in] rs The robot_system instance.
  * @returns The angle value according to external encoders.
  */
-int32_t rs_get_ext_angle(void * rs);
+float rs_get_ext_angle(void * rs);
 
 /** @brief Gets the distance based on external encoders.
  *
@@ -333,7 +333,7 @@ int32_t rs_get_ext_angle(void * rs);
  * @param [in] rs The robot_system instance.
  * @returns The angle distance according to external encoders.
  */
-int32_t rs_get_ext_distance(void * rs);
+float rs_get_ext_distance(void * rs);
 
 #ifdef CONFIG_MODULE_ROBOT_SYSTEM_MOT_AND_EXT
 

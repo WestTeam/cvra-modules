@@ -88,8 +88,9 @@ void __trajectory_goto_d_a_rel(struct trajectory *traj, float d_mm,
             a_consign = (float)(a_rad); /* *(traj->position->phys.distance_imp_per_mm) *
                           (traj->position->phys.track_mm) / 2)*/;
         }
+        traj->target.pol.angle = rs_get_ext_angle(traj->robot)+a_consign;
         a_consign +=  rs_get_angle(traj->robot);
-        traj->target.pol.angle = a_consign;
+
         cs_set_consign(traj->csm_angle, a_consign);
     }
     if (flags & UPDATE_D) {
@@ -99,8 +100,9 @@ void __trajectory_goto_d_a_rel(struct trajectory *traj, float d_mm,
         else {
             d_consign = (float)((d_mm)); /* * (traj->position->phys.distance_imp_per_mm));*/
         }
+        traj->target.pol.distance = rs_get_ext_distance(traj->robot)+d_consign;
         d_consign += rs_get_distance(traj->robot);
-        traj->target.pol.distance = d_consign;
+
         //printf("D set %f\n", (float)d_consign);
         cs_set_consign(traj->csm_distance, d_consign);
     }
@@ -341,6 +343,24 @@ uint8_t trajectory_in_window(struct trajectory *traj, float d_win, float a_win_r
 
 /*********** *TRAJECTORY EVENT FUNC */
 
+/** event called for a / d trajectories */
+void trajectory_manager_a_d_event(struct trajectory *traj)
+{
+    float d_consign=0, a_consign=0;
+    //traj->target.pol.angle = a_consign;
+    //traj->target.pol.distance = d_consign;
+
+    a_consign +=  rs_get_angle(traj->robot) + (traj->target.pol.angle-rs_get_ext_angle(traj->robot));
+    d_consign += rs_get_distance(traj->robot) + (traj->target.pol.distance-rs_get_ext_distance(traj->robot));
+
+    //if (trajectory_in_window(traj,traj->d_win,traj->a_win_rad))
+    //    delete_event(traj);
+
+    cs_set_consign(traj->csm_angle, a_consign);
+    cs_set_consign(traj->csm_distance, d_consign);
+
+}
+
 /** event called for xy trajectories */
 void trajectory_manager_xy_event(struct trajectory *traj)
 {
@@ -410,7 +430,7 @@ void trajectory_manager_xy_event(struct trajectory *traj)
 
         /* angle consign */
         /* Here we specify 2.2 instead of 2.0 to avoid oscillations */
-        a_consign = (float)(v2pol_target.theta);/* *
+        a_consign = (float)(v2pol_target.theta*0.8);/* *
                       (traj->position->phys.distance_imp_per_mm) *
                       (traj->position->phys.track_mm) / 2.2);*/
         a_consign += rs_get_angle(traj->robot);
@@ -650,6 +670,11 @@ void trajectory_manager_event(void * param)
 
     //while(1) {
         switch (traj->state) {
+            case RUNNING_A:
+            case RUNNING_D:
+                trajectory_manager_a_d_event(traj);
+                break;
+            
             case RUNNING_XY_START:
             case RUNNING_XY_ANGLE:
             case RUNNING_XY_ANGLE_OK:
