@@ -461,11 +461,11 @@ void trajectory_manager_xy_event(struct trajectory *traj)
     case RUNNING_XY_B_ANGLE: {
         /* if d_speed is not 0, we are in start_angle_win */
         if (get_quadramp_distance_speed(traj)) {
+            traj->state++;
             if (is_robot_in_xy_window(traj, traj->d_win)) {
                 delete_event(traj);
             }
             /* ANGLE -> ANGLE_OK */
-            traj->state ++;
             //DEBUG(E_TRAJECTORY, "-> ANGLE_OK");
         }
         break;

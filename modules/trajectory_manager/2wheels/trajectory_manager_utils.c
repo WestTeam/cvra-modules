@@ -80,7 +80,7 @@ void set_quadramp_acc(struct trajectory *traj, float d_acc, float a_acc)
 /** remove event if any */
 void delete_event(struct trajectory *traj)
 {
-
+    traj->state = READY;
     set_quadramp_speed(traj, traj->d_speed, traj->a_speed);
     set_quadramp_acc(traj, traj->d_acc, traj->a_acc);
     //OSTaskDel(TRAJ_EVT_PRIO);
