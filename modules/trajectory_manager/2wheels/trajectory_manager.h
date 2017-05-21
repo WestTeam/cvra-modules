@@ -100,6 +100,7 @@ struct line_target {
 /** A complete instance of the trajectory manager. */
 struct trajectory {
     enum trajectory_state state; /**< describe the type of target, and if we reached the target */
+    uint8_t correction; 
 
     union {
         vect2_cart cart;             /**< target, if it is a x,y vector */
@@ -273,8 +274,9 @@ void trajectory_hardstop(struct trajectory *traj);
  *
  * @param [in] traj The trajectory manager instance.
  * @param [in] d_mm The distance, in mm.
+ * @param [in] correction Use external coder correction.
  */
-void trajectory_d_rel(struct trajectory *traj, float d_mm);
+void trajectory_d_rel(struct trajectory *traj, float d_mm, uint8_t correction);
 
 /** @brief Goes straight.
  *
@@ -285,8 +287,9 @@ void trajectory_d_rel(struct trajectory *traj, float d_mm);
  *
  * @param [in] traj The trajectory manager instance.
  * @param [in] d_mm The distance consign in mm.
+ * @param [in] correction Use external coder correction.
  */
-void trajectory_only_d_rel(struct trajectory *traj, float d_mm);
+void trajectory_only_d_rel(struct trajectory *traj, float d_mm, uint8_t correction);
 
 /** @brief Turn by a given angle.
  *
@@ -294,11 +297,12 @@ void trajectory_only_d_rel(struct trajectory *traj, float d_mm);
  *
  * @param [in] traj The trajectory manager instance.
  * @param [in] a_deg The angle in degrees.
+ * @param [in] correction Use external coder correction.
  * @sa trajectory_a_abs
  * @sa trajectory_only_a_abs
  * @sa trajectory_only_a_rel
  */
-void trajectory_a_rel(struct trajectory *traj, float a_deg);
+void trajectory_a_rel(struct trajectory *traj, float a_deg, uint8_t correction);
 
 /** @brief Turn to a given angle.
  *
@@ -306,9 +310,10 @@ void trajectory_a_rel(struct trajectory *traj, float a_deg);
  *
  * @param [in] traj The trajectory manager instance.
  * @param [in] a_deg The angle in degrees.
+ * @param [in] correction Use external coder correction.
  * @sa trajectory_a_rel
  */
-void trajectory_a_abs(struct trajectory *traj, float a_deg);
+void trajectory_a_abs(struct trajectory *traj, float a_deg, uint8_t correction);
 
 /** @brief Makes the robot face a given point.
  *
@@ -316,6 +321,7 @@ void trajectory_a_abs(struct trajectory *traj, float a_deg);
  *
  * @param [in] traj The trajectory manager instance.
  * @param [in] x_abs_mm, y_abs_mm The coordinate of the point in mm.
+
  * @sa trajectory_turnto_xy_behind
  */
 void trajectory_turnto_xy(struct trajectory*traj, float x_abs_mm, float y_abs_mm);
@@ -338,11 +344,12 @@ void trajectory_turnto_xy_behind(struct trajectory*traj, float x_abs_mm, float y
  *
  * @param [in] traj The trajectory manager instance.
  * @param [in] a_deg The angle in degrees.
+ * @param [in] correction Use external coder correction.
  * @sa trajectory_a_abs
  * @sa trajectory_a_rel
  * @sa trajectory_only_a_abs
  */
-void trajectory_only_a_rel(struct trajectory *traj, float a_deg);
+void trajectory_only_a_rel(struct trajectory *traj, float a_deg, uint8_t correction);
 
 /** @brief Makes the robot turn to given angle.
  *
@@ -352,11 +359,12 @@ void trajectory_only_a_rel(struct trajectory *traj, float a_deg);
  *
  * @param [in] traj The trajectory manager instance.
  * @param [in] a_deg The angle in degrees.
+ * @param [in] correction Use external coder correction.
  * @sa trajectory_a_abs
  * @sa trajectory_a_rel
  * @sa trajectory_only_a_rel
  */
-void trajectory_only_a_abs(struct trajectory *traj, float a_deg);
+void trajectory_only_a_abs(struct trajectory *traj, float a_deg, uint8_t correction);
 
 /** @brief Makes the robot move and turn.
  *
@@ -369,8 +377,9 @@ void trajectory_only_a_abs(struct trajectory *traj, float a_deg);
  * @param [in] traj The trajectory manager instance.
  * @param [in] d_mm The distance to go, in mm.
  * @param [in] a_deg The angle to turn, in degrees.
+ * @param [in] correction Use external coder correction.
  */
-void trajectory_d_a_rel(struct trajectory *traj, float d_mm, float a_deg);
+void trajectory_d_a_rel(struct trajectory *traj, float d_mm, float a_deg, uint8_t correction);
 
 /* commands using events */
 
@@ -418,8 +427,9 @@ void trajectory_goto_backward_xy_abs(struct trajectory *traj, float x_abs_mm, fl
  * @param [in] traj The trajectory manager instance.
  * @param [in] d The distance in mm.
  * @param [in] a The angle in degrees.
+ * @param [in] correction Use external coder correction.
  */
-void trajectory_goto_d_a_rel(struct trajectory *traj, float d, float a);
+void trajectory_goto_d_a_rel(struct trajectory *traj, float d, float a, uint8_t correction);
 
 /** @brief Go to a relative point.
  *

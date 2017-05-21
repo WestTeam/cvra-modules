@@ -33,16 +33,16 @@ void __trajectory_goto_d_a_rel(struct trajectory *traj, float d_mm,
 			       float a_rad, uint8_t state, uint8_t flags);
 
 /** go straight forward (d is in mm) */
-void trajectory_d_rel(struct trajectory *traj, float d_mm);
+void trajectory_d_rel(struct trajectory *traj, float d_mm, uint8_t correction);
 
 /** update distance consign without changing angle consign */
-void trajectory_only_d_rel(struct trajectory *traj, float d_mm);
+void trajectory_only_d_rel(struct trajectory *traj, float d_mm, uint8_t correction);
 
 /** turn by 'a' degrees */
-void trajectory_a_rel(struct trajectory *traj, float a_deg_rel);
+void trajectory_a_rel(struct trajectory *traj, float a_deg_rel, uint8_t correction);
 
 /** turn by 'a' degrees */
-void trajectory_a_abs(struct trajectory *traj, float a_deg_abs);
+void trajectory_a_abs(struct trajectory *traj, float a_deg_abs, uint8_t correction);
 
 /** turn the robot until the point x,y is in front of us */
 void trajectory_turnto_xy(struct trajectory *traj, float x_abs_mm, float y_abs_mm);
@@ -53,14 +53,14 @@ void trajectory_turnto_xy_behind(struct trajectory *traj, float x_abs_mm, float 
 
 
 /** update angle consign without changing distance consign */
-void trajectory_only_a_rel(struct trajectory *traj, float a_deg);
+void trajectory_only_a_rel(struct trajectory *traj, float a_deg, uint8_t correction);
 
 /** update angle consign without changing distance consign */
-void trajectory_only_a_abs(struct trajectory *traj, float a_deg_abs);
+void trajectory_only_a_abs(struct trajectory *traj, float a_deg_abs, uint8_t correction);
 
 
 /** turn by 'a' degrees */
-void trajectory_d_a_rel(struct trajectory *traj, float d_mm, float a_deg);
+void trajectory_d_a_rel(struct trajectory *traj, float d_mm, float a_deg, uint8_t correction);
 
 /** set relative angle and distance consign to 0 */
 void trajectory_stop(struct trajectory *traj);
@@ -82,7 +82,7 @@ void trajectory_goto_forward_xy_abs(struct trajectory *traj, float x, float y);
 void trajectory_goto_backward_xy_abs(struct trajectory *traj, float x, float y);
 
 /** go forward to a d,a point, using a trajectory event */
-void trajectory_goto_d_a_rel(struct trajectory *traj, float d, float a);
+void trajectory_goto_d_a_rel(struct trajectory *traj, float d, float a, uint8_t correction);
 
 /** go forward to a x,y relative point, using a trajectory event */
 void trajectory_goto_xy_rel(struct trajectory *traj, float x_rel_mm, float y_rel_mm);

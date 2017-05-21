@@ -123,7 +123,13 @@ float modulo_2pi(float a)
 /** near the target (dist) ? */
 uint8_t is_robot_in_dist_window(struct trajectory *traj, float d_win)
 {
-    float d = traj->target.pol.distance - rs_get_distance(traj->robot);
+    float d;
+
+    if (traj->correction)
+        d = traj->target.pol.distance - rs_get_ext_distance(traj->robot);
+    else
+        d = traj->target.pol.distance - rs_get_distance(traj->robot);
+
     d = ABS(d);
 /*    d = d / traj->position->phys.distance_imp_per_mm; */
     return (d < d_win);
@@ -147,7 +153,10 @@ uint8_t is_robot_in_angle_window(struct trajectory *traj, float a_win_rad)
     float a;
 
     /* convert relative angle from imp to rad */
-    a = traj->target.pol.angle - rs_get_ext_angle(traj->robot);
+    if (traj->correction)
+        a = traj->target.pol.angle - rs_get_ext_angle(traj->robot);
+    else
+        a = traj->target.pol.angle - rs_get_angle(traj->robot);
 /*    a /= traj->position->phys.distance_imp_per_mm;
     a /= traj->position->phys.track_mm;
     a *= 2.;

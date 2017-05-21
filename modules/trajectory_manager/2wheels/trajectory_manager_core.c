@@ -80,6 +80,12 @@ void __trajectory_goto_d_a_rel(struct trajectory *traj, float d_mm,
     //DEBUG(E_TRAJECTORY, "Goto DA/RS rel to d=%f a_rad=%f", d_mm, a_rad);
     delete_event(traj);
     traj->state = state;
+
+    if (traj->correction)
+        traj->target.pol.angle = rs_get_ext_angle(traj->robot);
+    else
+        traj->target.pol.angle = rs_get_angle(traj->robot);
+
     if (flags & UPDATE_A) {
         if (flags & RESET_A) {
             a_consign = 0;
@@ -88,11 +94,17 @@ void __trajectory_goto_d_a_rel(struct trajectory *traj, float d_mm,
             a_consign = (float)(a_rad); /* *(traj->position->phys.distance_imp_per_mm) *
                           (traj->position->phys.track_mm) / 2)*/;
         }
-        traj->target.pol.angle = rs_get_ext_angle(traj->robot)+a_consign;
+        traj->target.pol.angle += a_consign;
         a_consign +=  rs_get_angle(traj->robot);
 
         cs_set_consign(traj->csm_angle, a_consign);
     }
+
+    if (traj->correction)
+        traj->target.pol.distance = rs_get_ext_distance(traj->robot);
+    else
+        traj->target.pol.distance = rs_get_distance(traj->robot);
+
     if (flags & UPDATE_D) {
         if (flags & RESET_D) {
             d_consign = 0;
@@ -100,7 +112,7 @@ void __trajectory_goto_d_a_rel(struct trajectory *traj, float d_mm,
         else {
             d_consign = (float)((d_mm)); /* * (traj->position->phys.distance_imp_per_mm));*/
         }
-        traj->target.pol.distance = rs_get_ext_distance(traj->robot)+d_consign;
+        traj->target.pol.distance += d_consign;
         d_consign += rs_get_distance(traj->robot);
 
         //printf("D set %f\n", (float)d_consign);
@@ -110,29 +122,35 @@ void __trajectory_goto_d_a_rel(struct trajectory *traj, float d_mm,
 
 
 
-void trajectory_d_rel(struct trajectory *traj, float d_mm)
+void trajectory_d_rel(struct trajectory *traj, float d_mm, uint8_t correction)
 {
+    traj->correction = correction;
+ 
     __trajectory_goto_d_a_rel(traj, d_mm, 0, RUNNING_D,
                   UPDATE_D | UPDATE_A | RESET_A);
 }
 
-void trajectory_only_d_rel(struct trajectory *traj, float d_mm)
+void trajectory_only_d_rel(struct trajectory *traj, float d_mm, uint8_t correction)
 {
+    traj->correction = correction;
+
     __trajectory_goto_d_a_rel(traj, d_mm, 0, RUNNING_D, UPDATE_D);
 }
 
-void trajectory_a_rel(struct trajectory *traj, float a_deg_rel)
+void trajectory_a_rel(struct trajectory *traj, float a_deg_rel, uint8_t correction)
 {
+    traj->correction = correction;
     //printf("%d\n", (int)a_deg_rel);
     __trajectory_goto_d_a_rel(traj, 0, RAD(a_deg_rel), RUNNING_A,
                   UPDATE_A | UPDATE_D | RESET_D);
 }
 
-void trajectory_a_abs(struct trajectory *traj, float a_deg_abs)
+void trajectory_a_abs(struct trajectory *traj, float a_deg_abs, uint8_t correction)
 {
     float posa = position_get_a_rad_float(traj->position);
     float a;
 
+    traj->correction = correction;
     a = RAD(a_deg_abs) - posa;
     a = modulo_2pi(a);
     __trajectory_goto_d_a_rel(traj, 0, a, RUNNING_A,
@@ -144,6 +162,8 @@ void trajectory_turnto_xy(struct trajectory *traj, float x_abs_mm, float y_abs_m
     float posx = position_get_x_float(traj->position);
     float posy = position_get_y_float(traj->position);
     float posa = position_get_a_rad_float(traj->position);
+
+    traj->correction = 1;
 
     //DEBUG(E_TRAJECTORY, "Goto Turn To xy %f %f", x_abs_mm, y_abs_mm);
     __trajectory_goto_d_a_rel(traj, 0,
@@ -158,6 +178,8 @@ void trajectory_turnto_xy_behind(struct trajectory *traj, float x_abs_mm, float 
     float posy = position_get_y_float(traj->position);
     float posa = position_get_a_rad_float(traj->position);
 
+    traj->correction = 1;
+
     //DEBUG(E_TRAJECTORY, "Goto Turn To xy %f %f", x_abs_mm, y_abs_mm);
     __trajectory_goto_d_a_rel(traj, 0,
             modulo_2pi(__ieee754_atan2f(y_abs_mm - posy, x_abs_mm - posx) - posa + M_PI),
@@ -165,24 +187,28 @@ void trajectory_turnto_xy_behind(struct trajectory *traj, float x_abs_mm, float 
                   UPDATE_A | UPDATE_D | RESET_D);
 }
 
-void trajectory_only_a_rel(struct trajectory *traj, float a_deg)
+void trajectory_only_a_rel(struct trajectory *traj, float a_deg, uint8_t correction)
 {
+    traj->correction = correction;
     __trajectory_goto_d_a_rel(traj, 0, RAD(a_deg), RUNNING_A,
                   UPDATE_A);
 }
 
-void trajectory_only_a_abs(struct trajectory *traj, float a_deg_abs)
+void trajectory_only_a_abs(struct trajectory *traj, float a_deg_abs, uint8_t correction)
 {
     float posa = position_get_a_rad_float(traj->position);
     float a;
+
+    traj->correction = correction;
 
     a = RAD(a_deg_abs) - posa;
     a = modulo_2pi(a);
     __trajectory_goto_d_a_rel(traj, 0, a, RUNNING_A, UPDATE_A);
 }
 
-void trajectory_d_a_rel(struct trajectory *traj, float d_mm, float a_deg)
+void trajectory_d_a_rel(struct trajectory *traj, float d_mm, float a_deg, uint8_t correction)
 {
+    traj->correction = correction;
     __trajectory_goto_d_a_rel(traj, d_mm, RAD(a_deg),
                   RUNNING_AD, UPDATE_A | UPDATE_D);
 }
@@ -190,6 +216,7 @@ void trajectory_d_a_rel(struct trajectory *traj, float d_mm, float a_deg)
 void trajectory_stop(struct trajectory *traj)
 {
     //DEBUG(E_TRAJECTORY, "stop");
+    traj->correction = 0;
     __trajectory_goto_d_a_rel(traj, 0, 0, READY,
                   UPDATE_A | UPDATE_D | RESET_D | RESET_A);
 }
@@ -199,6 +226,8 @@ void trajectory_hardstop(struct trajectory *traj)
     struct quadramp_filter *q_d, *q_a;
 
     //DEBUG(E_TRAJECTORY, "hardstop");
+
+    traj->correction = 0;
 
     q_d = traj->csm_distance->consign_filter_params;
     q_a = traj->csm_angle->consign_filter_params;
@@ -241,13 +270,14 @@ void trajectory_goto_backward_xy_abs(struct trajectory *traj, float x, float y)
     schedule_event(traj);
 }
 
-void trajectory_goto_d_a_rel(struct trajectory *traj, float d, float a)
+void trajectory_goto_d_a_rel(struct trajectory *traj, float d, float a, uint8_t correction)
 {
     vect2_pol p;
     float x = position_get_x_float(traj->position);
     float y = position_get_y_float(traj->position);
 
     //DEBUG(E_TRAJECTORY, "Goto DA rel");
+    traj->correction = correction;
 
     delete_event(traj);
     p.r = d;
@@ -346,19 +376,21 @@ uint8_t trajectory_in_window(struct trajectory *traj, float d_win, float a_win_r
 /** event called for a / d trajectories */
 void trajectory_manager_a_d_event(struct trajectory *traj)
 {
-    float d_consign=0, a_consign=0;
-    //traj->target.pol.angle = a_consign;
-    //traj->target.pol.distance = d_consign;
+    float d_consign;
+    float a_consign;
 
-    a_consign +=  rs_get_angle(traj->robot) + (traj->target.pol.angle-rs_get_ext_angle(traj->robot));
-    d_consign += rs_get_distance(traj->robot) + (traj->target.pol.distance-rs_get_ext_distance(traj->robot));
+    if (trajectory_in_window(traj, traj->d_win,traj->a_win_rad))
+        delete_event(traj);
 
-    //if (trajectory_in_window(traj,traj->d_win,traj->a_win_rad))
-    //    delete_event(traj);
+    if (traj->correction == 1)
+    {
+        a_consign = rs_get_angle(traj->robot) + (traj->target.pol.angle-rs_get_ext_angle(traj->robot));
+        d_consign = rs_get_distance(traj->robot) + (traj->target.pol.distance-rs_get_ext_distance(traj->robot));
 
-    cs_set_consign(traj->csm_angle, a_consign);
-    cs_set_consign(traj->csm_distance, d_consign);
 
+        cs_set_consign(traj->csm_angle, a_consign);
+        cs_set_consign(traj->csm_distance, d_consign);
+    }
 }
 
 /** event called for xy trajectories */
@@ -672,6 +704,7 @@ void trajectory_manager_event(void * param)
         switch (traj->state) {
             case RUNNING_A:
             case RUNNING_D:
+            case RUNNING_AD:
                 trajectory_manager_a_d_event(traj);
                 break;
             
