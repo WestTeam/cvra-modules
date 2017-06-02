@@ -314,7 +314,7 @@ void trajectory_goto_xy_rel(struct trajectory *traj, float x_rel_mm, float y_rel
     schedule_event(traj);
 }
 
-
+#if 0
 uint8_t trajectory_angle_finished(struct trajectory *traj)
 {
     return cs_get_consign(traj->csm_angle) ==
@@ -338,6 +338,7 @@ uint8_t trajectory_finished(struct trajectory *traj)
     return trajectory_distance_finished(traj) && trajectory_angle_finished(traj);
 
 }
+#endif
 
 /** return true if traj is nearly finished */
 uint8_t trajectory_in_window(struct trajectory *traj, float d_win, float a_win_rad)
