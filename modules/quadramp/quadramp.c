@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 #include <string.h>
-//#include <math.h>
+#include <math.h>
 
 #include <tools.h>
 
@@ -100,7 +100,7 @@ float quadramp_do_filter(void * data, float in)
 	if (d > 0.0 && var_2nd_ord_neg != 0.0) {
 		float ramp_pos;
 		/* var_2nd_ord_neg < 0 */
-		ramp_pos = __ieee754_sqrtf((var_2nd_ord_neg*var_2nd_ord_neg)/4 -
+		ramp_pos = sqrt((var_2nd_ord_neg*var_2nd_ord_neg)/4 -
 				2*d_float*var_2nd_ord_neg) +
 			var_2nd_ord_neg/2;
 
@@ -112,7 +112,7 @@ float quadramp_do_filter(void * data, float in)
 		float ramp_neg;
 
 		/* var_2nd_ord_pos > 0 */
-		ramp_neg = -__ieee754_sqrtf( (var_2nd_ord_pos*var_2nd_ord_pos)/4 -
+		ramp_neg = -sqrt( (var_2nd_ord_pos*var_2nd_ord_pos)/4 -
 				  2*d_float*var_2nd_ord_pos ) -
 			var_2nd_ord_pos/2;
 

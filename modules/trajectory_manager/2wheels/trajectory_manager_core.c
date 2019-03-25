@@ -25,8 +25,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
-//#include <math.h>
-#include <tools.h>
+#include <math.h>
+//#include <tools.h>
 
 //#include <platform.h>
 //#include <aversive/error.h>
@@ -42,6 +42,9 @@
 #include <2wheels/trajectory_manager.h>
 #include "trajectory_manager_utils.h"
 #include "trajectory_manager_core.h"
+
+#define ABS(x) fabsf(x)
+
 
 /************ SIMPLE TRAJS, NO EVENT */
 
@@ -167,7 +170,7 @@ void trajectory_turnto_xy(struct trajectory *traj, float x_abs_mm, float y_abs_m
 
     //DEBUG(E_TRAJECTORY, "Goto Turn To xy %f %f", x_abs_mm, y_abs_mm);
     __trajectory_goto_d_a_rel(traj, 0,
-            simple_modulo_2pi(__ieee754_atan2f(y_abs_mm - posy, x_abs_mm - posx) - posa),
+            simple_modulo_2pi(atan2f(y_abs_mm - posy, x_abs_mm - posx) - posa),
                   RUNNING_A,
                   UPDATE_A | UPDATE_D | RESET_D);
 }
@@ -182,7 +185,7 @@ void trajectory_turnto_xy_behind(struct trajectory *traj, float x_abs_mm, float 
 
     //DEBUG(E_TRAJECTORY, "Goto Turn To xy %f %f", x_abs_mm, y_abs_mm);
     __trajectory_goto_d_a_rel(traj, 0,
-            modulo_2pi(__ieee754_atan2f(y_abs_mm - posy, x_abs_mm - posx) - posa + M_PI),
+            modulo_2pi(atan2f(y_abs_mm - posy, x_abs_mm - posx) - posa + M_PI),
                   RUNNING_A,
                   UPDATE_A | UPDATE_D | RESET_D);
 }
@@ -867,7 +870,7 @@ static int8_t calc_clitoid(struct trajectory *traj,
     float xm, ym, L, A;
 
     /* param check */
-    if (fabs(alpha_deg) <= fabs(beta_deg)) {
+    if (ABS(alpha_deg) <= ABS(beta_deg)) {
         //DEBUG(E_TRAJECTORY, "alpha is smaller than beta");
         return -1;
     }
@@ -883,7 +886,7 @@ static int8_t calc_clitoid(struct trajectory *traj,
      * the first clothoid */
     alpha_rad = RAD(alpha_deg);
     beta_rad = RAD(beta_deg);
-    t = fabs(((alpha_rad - beta_rad) * R_mm) / Vd_mm_s);
+    t = ABS(((alpha_rad - beta_rad) * R_mm) / Vd_mm_s);
     //DEBUG(E_TRAJECTORY, "R_mm=%2.2f a_rad=%2.2f alpha_rad=%2.2f beta_rad=%2.2f t=%2.2f",
     //      R_mm, a_rad, alpha_rad, beta_rad, t);
 
@@ -915,7 +918,7 @@ static int8_t calc_clitoid(struct trajectory *traj,
      * clothoid) of the crossing point between the clothoid and
      * the circle. */
     L = Vd_mm_s * t;
-    A = R_mm * __ieee754_sqrtf(fabs(alpha_rad - beta_rad));
+    A = R_mm * sqrtf(ABS(alpha_rad - beta_rad));
     xm =
         L
         - (pow(L, 5) / (40. * pow(A, 4)))
@@ -1009,7 +1012,7 @@ static void start_clitoid(struct trajectory *traj)
     //DEBUG(E_TRAJECTORY, "%s() Va=%2.2f Aa=%2.2f",
     //      __FUNCTION__, Va, Aa);
     delete_event(traj);
-    d = fabs(R_mm * a_rad);
+    d = ABS(R_mm * a_rad);
     d *= 3.; /* margin to avoid deceleration */
     trajectory_d_a_rel(traj, d, DEG(a_rad));
     set_quadramp_acc(traj, traj->d_acc, Aa);

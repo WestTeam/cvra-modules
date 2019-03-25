@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdint.h>
-#include <tools.h>
+//#include <tools.h>
 //#include <platform.h>
 //#include <aversive/error.h>
 #include <vect2.h>
@@ -39,6 +39,8 @@
 #include "trajectory_manager.h"
 #include "trajectory_manager_utils.h"
 #include "trajectory_manager_core.h"
+
+#define ABS(x) fabsf(x)
 
 
 /** set speed consign in quadramp filter */
@@ -142,7 +144,7 @@ uint8_t is_robot_in_xy_window(struct trajectory *traj, float d_win)
     float y1 = traj->target.cart.y;
     float x2 = position_get_x_float(traj->position);
     float y2 = position_get_y_float(traj->position);
-    return ( __ieee754_sqrtf ((x2-x1) * (x2-x1) + (y2-y1) * (y2-y1)) < d_win );
+    return ( sqrtf ((x2-x1) * (x2-x1) + (y2-y1) * (y2-y1)) < d_win );
 }
 
 /** near the angle target in radian ? Only valid if
